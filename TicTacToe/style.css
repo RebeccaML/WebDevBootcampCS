@@ -1,0 +1,24 @@
+h1 {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: purple;
+    text-align: center;
+}
+
+table {
+    margin: auto;
+}
+
+td {
+    width: 100px;
+    height: 100px;
+    background: lavender;
+}
+
+.vertical {
+    border-left: 2px solid purple;
+    border-right: 2px solid purple;
+}
+.horizontal {
+    border-top: 2px solid purple;
+    border-bottom: 2px solid purple;
+}
