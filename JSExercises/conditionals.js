@@ -1,4 +1,4 @@
-var age = Number(prompt("How old are you?"))
+let age = Number(prompt("How old are you?"))
 
 if (age < 0) {
     console.log("Error")
