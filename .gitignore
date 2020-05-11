@@ -1,7 +1,4 @@
 Bootstrap4Code/
 PatatapClone/PaperJs
-NodeIntro/Faker/node_modules
-FirstExpressApp/node_modules
-ExpressBasics/node_modules
-ExpressEJS/node_modules
-PostRequestDemo/node_modules
+*/node_modules
+*/*/node_modules
