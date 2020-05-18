@@ -53,6 +53,17 @@ app.post("/posts", function(req, res) {
     });
 });
 
+app.get("/posts/:id", function(req, res) {
+    Blog.findById(req.params.id, function(err, foundPost) {
+        if (err) {
+            res.redirect("/posts");
+        }
+        else {
+            res.render("show", {post: foundPost});
+        }
+    });
+});
+
 app.listen("3000", function() {
     console.log("Listening on port 3000");
 });
