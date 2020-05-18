@@ -1,6 +1,7 @@
 let express = require("express");
 let bodyParser = require("body-parser");
 let methodOverride = require("method-override");
+let expressSanitizer = require("express-sanitizer");
 let mongoose = require("mongoose");
 let app = express();
 
@@ -9,6 +10,7 @@ app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(methodOverride("_method"));
+app.use(expressSanitizer());
 
 let blogSchema = new mongoose.Schema({
     title: String,
@@ -45,6 +47,7 @@ app.get("/posts/new", function(req, res) {
 });
 
 app.post("/posts", function(req, res) {
+    req.body.post.body = req.sanitize(req.body.blog.body);
     Blog.create(req.body.post, function(err, newPost) {
         if (err) {
             res.render("new");
@@ -78,12 +81,25 @@ app.get("/posts/:id/edit", function(req, res) {
 });
 
 app.put("/posts/:id", function(req, res) {
+    req.body.post.body = req.sanitize(req.body.blog.body);
     Blog.findByIdAndUpdate(req.params.id, req.body.post, function(err, updatedPost) {
         if (err) {
             res.redirect("/posts");
         }
         else {
             res.redirect("/posts/" + req.params.id);
+        }
+    });
+});
+
+app.delete("/posts/:id", function(req, res) {
+    Blog.findByIdAndRemove(req.params.id, function(err) {
+        if (err) {
+            console.log(err);
+            res.redirect("/posts");
+        }
+        else {
+            res.redirect("/posts");
         }
     });
 });
