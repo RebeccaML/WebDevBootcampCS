@@ -2,12 +2,12 @@
 
 <h1>Index Page!</h1>
 
-<% blogs.forEach(function(blog) { %>
+<% posts.forEach(function(post) { %>
     <div>
-        <h2><%= blog.title %></h2>
-        <img src="<%= blog.image %>">
-        <span><%= blog.created %></span>
-        <p><%= blog.body %></p>
+        <h2><%= post.title %></h2>
+        <img src="<%= post.image %>">
+        <span><%= post.created %></span>
+        <p><%= post.body %></p>
     </div>
 <% }); %>
 

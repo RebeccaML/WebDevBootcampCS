@@ -24,16 +24,31 @@ let Blog = mongoose.model("Blog", blogSchema);
 // });
 
 app.get("/", function(req, res) {
-    res.redirect("/blogs");
+    res.redirect("/posts");
 });
 
-app.get("/blogs", function(req, res) {
-    Blog.find({}, function(err, blogs) {
+app.get("/posts", function(req, res) {
+    Blog.find({}, function(err, posts) {
         if (err) {
             console.log("Error!");
         }
         else {
-            res.render("index", {blogs: blogs});
+            res.render("index", {posts: posts});
+        }
+    });
+});
+
+app.get("/posts/new", function(req, res) {
+    res.render("new");
+});
+
+app.post("/posts", function(req, res) {
+    Blog.create(req.body.post, function(err, newPost) {
+        if (err) {
+            res.render("new");
+        }
+        else {
+            res.redirect("/posts");
         }
     });
 });
