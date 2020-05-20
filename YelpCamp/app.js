@@ -1,32 +1,29 @@
-let express = require("express");
-let app = express();
-let bodyParser = require("body-parser");
-let mongoose = require("mongoose");
-let Campground = require("./models/campground");
-let Comment = require("./models/comment");
-// let User = require("./models/user");
-let seedDB = require("./seed");
+let express = require("express"),
+    app = express(),
+    bodyParser = require("body-parser"),
+    mongoose = require("mongoose"),
+    passport = require("passport"),
+    LocalStrategy = require("passport-local"),
+    Campground = require("./models/campground"),
+    Comment = require("./models/comment"),
+    User = require("./models/user"),
+    seedDB = require("./seed");
 
 // seedDB();
 mongoose.connect("mongodb://localhost:27017/yelp_camp", {useNewUrlParser: true});
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
-
-// Campground.create(
-//     {
-//         name: "Swamp of Sorrows",
-//         image: "https://images.freeimages.com/images/large-previews/915/camp-fire-1511939.jpg",
-//         description: "This swamp is said to drain the happiness out of people."
-//     }, function(err, campground) {
-//         if (err) {
-//             console.log(err);
-//         }
-//         else {
-//             console.log("Campground created: ");
-//             console.log(campground);
-//         }
-//     });
+app.use(require("express-session")({
+    secret: "Sparkle Fairies",
+    resave: false,
+    saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 app.get("/", function(req, res) {
     res.render("landing");
@@ -73,7 +70,7 @@ app.get("/campgrounds/:id", function(req, res) {
     });
 });
 
-// Comments routes
+// Comment routes
 
 app.get("/campgrounds/:id/comments/new", function(req, res) {
     Campground.findById(req.params.id, function(err, campground) {
@@ -105,6 +102,37 @@ app.post("/campgrounds/:id/comments", function(req, res) {
             });
         }
     })
+});
+
+// Authentication routes
+
+app.get("/register", function(req, res) {
+    res.render("register");
+});
+
+app.post("/register", function(req, res) {
+    let newUser = new User({username: req.body.username});
+    User.register(newUser, req.body.password, function(err, user){
+        if (err) {
+            console.log(err);
+            return res.render("/register");
+        }
+        passport.authenticate("local")(req, res, function() {
+            res.redirect("/campgrounds");
+        });
+    });
+});
+
+app.get("/login", function(req, res) {
+    res.render("login");
+});
+
+app.post("/login", passport.authenticate("local", 
+    {
+        successRedirect: "/campgrounds",
+        failureRedirect: "/login"
+    }), function(req, res) {
+
 });
 
 app.listen(3000, function() {
